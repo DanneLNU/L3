@@ -1,3 +1,5 @@
+// platformer.js
+
 import { Vector2D } from './physics/Vector2D.js';
 import { RigidBody } from './physics/RigidBody.js';
 import { Rectangle } from './physics/Shape.js';
@@ -56,12 +58,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (keys['ArrowRight']) {
             player.velocity = player.velocity.add(new Vector2D(0.5, 0));
         }
-        if (keys['ArrowUp'] && player.position.y >= 500) { // Simple ground check
+        if (keys['ArrowUp'] && player.velocity.y === 0) { // Allow jump only if player is not falling
             player.velocity = player.velocity.add(new Vector2D(0, -15));
         }
 
         // Step physics world
         physicsWorld.step(1 / 60);
+
+        // Collision Detection
+        [ground, platform].forEach((body) => {
+            if (player.position.y + player.shape.height / 2 > body.position.y - body.shape.height / 2 &&
+                player.position.y - player.shape.height / 2 < body.position.y + body.shape.height / 2 &&
+                player.position.x + player.shape.width / 2 > body.position.x - body.shape.width / 2 &&
+                player.position.x - player.shape.width / 2 < body.position.x + body.shape.width / 2) {
+                
+                // Resolve collision by placing the player on top of the platform
+                player.position.y = body.position.y - body.shape.height / 2 - player.shape.height / 2;
+                
+                // Stop downward velocity
+                if (player.velocity.y > 0) {
+                    player.velocity.y = 0;
+                }
+            }
+        });
 
         // Draw player
         ctx.fillStyle = 'blue';

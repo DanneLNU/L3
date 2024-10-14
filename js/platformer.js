@@ -53,9 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
         spikes = []
         platforms.forEach(platform => {
             if (Math.random() > 0.9) {
-                const spikeCount = Math.floor(platform.shape.width / 100)
+                const spikeCount = Math.floor(1 + Math.random() * 2) // 1 or 2 spikes
                 for (let i = 0; i < spikeCount; i++) {
-                    const spikeX = platform.position.x - platform.shape.width / 2 + i * 100 + 50
+                    const spikeX = platform.position.x - platform.shape.width / 2 + Math.random() * platform.shape.width
                     const spikeY = platform.position.y - platform.shape.height / 2 - 10
                     spikes.push({
                         position: new Vector2D(spikeX, spikeY),

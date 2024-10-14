@@ -9,31 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('gameCanvas')
     const ctx = canvas.getContext('2d');
 
-    // Create UI Elements
-    const playButton = document.createElement('button')
-    playButton.textContent = 'Play'
-    playButton.style.position = 'absolute'
-    playButton.style.top = '50%'
-    playButton.style.left = '50%'
-    playButton.style.transform = 'translate(-50%, -50%)'
-    playButton.style.padding = '20px'
-    playButton.style.fontSize = '20px'
-    document.body.appendChild(playButton)
-
-    const gameOverText = document.createElement('div')
-    gameOverText.textContent = 'You Died!'
-    gameOverText.style.position = 'absolute'
-    gameOverText.style.top = '40%'
-    gameOverText.style.left = '50%'
-    gameOverText.style.transform = 'translate(-50%, -50%)'
-    gameOverText.style.fontSize = '30px'
-    gameOverText.style.color = 'red'
-    gameOverText.style.display = 'none'
-    document.body.appendChild(gameOverText)
+    const playButton = document.getElementById('playButton')
+    const gameOverText = document.getElementById('gameOverText')
 
     let gameState = 'waiting' // Possible states: waiting, playing, gameOver
 
-    let physicsWorld, player, platforms, nextPlatformX
+    let physicsWorld, player, platforms, nextPlatformX, spikes
 
     function initializeGame() {
         // Create the physics world
@@ -45,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             position: new Vector2D(150, 380), // Start on the first platform
             velocity: new Vector2D(0, 0),
             mass: 1,
-            shape: new Rectangle(20, 20),
+            shape: new Rectangle(30, 30),
             restitution: 0.2
         })
         physicsWorld.addBody(player)
@@ -67,6 +48,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Initialize the position for the next platform
         nextPlatformX = 1600
+
+        // Create spikes on some platforms
+        spikes = []
+        platforms.forEach(platform => {
+            if (Math.random() > 0.9) {
+                const spikeCount = Math.floor(platform.shape.width / 100)
+                for (let i = 0; i < spikeCount; i++) {
+                    const spikeX = platform.position.x - platform.shape.width / 2 + i * 100 + 50
+                    const spikeY = platform.position.y - platform.shape.height / 2 - 10
+                    spikes.push({
+                        position: new Vector2D(spikeX, spikeY),
+                        width: 20,
+                        height: 20
+                    })
+                }
+            }
+        })
     }
 
     // Handle input
@@ -107,15 +105,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // Step physics world
         physicsWorld.step(1 / 60)
 
-        // Move platforms to the left to create a scrolling effect
+        // Move platforms and spikes to the left to create a scrolling effect
         const scrollSpeed = 1
         platforms.forEach(platform => {
             platform.position = platform.position.add(new Vector2D(-scrollSpeed, 0))
+        })
+        spikes.forEach(spike => {
+            spike.position = spike.position.add(new Vector2D(-scrollSpeed, 0))
         })
 
         // Remove platforms that are out of view and add new ones
         if (platforms[0].position.x + platforms[0].shape.width / 2 < 0) {
             platforms.shift()
+            spikes = spikes.filter(spike => spike.position.x > 0)
         }
 
         // Add new platforms at the right edge as needed
@@ -132,6 +134,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             platforms.push(newPlatform)
             physicsWorld.addBody(newPlatform)
+
+            // Add spikes to the new platform
+            if (Math.random() > 0.5) {
+                const spikeCount = Math.floor(newPlatformWidth / 100)
+                for (let i = 0; i < spikeCount; i++) {
+                    const spikeX = nextPlatformX - newPlatformWidth / 2 + i * 100 + 50
+                    const spikeY = newPlatformY - newPlatformHeight / 2 - 10
+                    spikes.push({
+                        position: new Vector2D(spikeX, spikeY),
+                        width: 20,
+                        height: 20
+                    })
+                }
+            }
 
             nextPlatformX += newPlatformWidth + 200
         }
@@ -162,17 +178,36 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
 
+        // Collision Detection for spikes
+        spikes.forEach(spike => {
+            if (player.position.x + player.shape.width / 2 > spike.position.x - spike.width / 2 &&
+                player.position.x - player.shape.width / 2 < spike.position.x + spike.width / 2 &&
+                player.position.y + player.shape.height / 2 > spike.position.y - spike.height / 2 &&
+                player.position.y - player.shape.height / 2 < spike.position.y + spike.height / 2) {
+                
+                // Player hit a spike, game over
+                gameState = 'gameOver'
+                gameOverText.style.display = 'block'
+                playButton.textContent = 'Restart'
+                playButton.style.display = 'block'
+                return
+            }
+        })
+
         // Draw player
-        ctx.fillStyle = 'blue'
-        ctx.fillRect(
+        ctx.fillStyle = '#0077ff' // Blue color for player
+        ctx.beginPath()
+        ctx.roundRect(
             player.position.x - player.shape.width / 2,
             player.position.y - player.shape.height / 2,
             player.shape.width,
-            player.shape.height
+            player.shape.height,
+            5 // Rounded corners
         )
+        ctx.fill()
 
         // Draw platforms
-        ctx.fillStyle = 'green'
+        ctx.fillStyle = '#3e8e41' // Green color for platforms
         platforms.forEach((body) => {
             ctx.fillRect(
                 body.position.x - body.shape.width / 2,
@@ -180,6 +215,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 body.shape.width,
                 body.shape.height
             )
+        })
+
+        // Draw spikes
+        ctx.fillStyle = 'red' // Red color for spikes
+        spikes.forEach(spike => {
+            ctx.beginPath()
+            ctx.moveTo(spike.position.x - spike.width / 2, spike.position.y + spike.height / 2)
+            ctx.lineTo(spike.position.x, spike.position.y - spike.height / 2)
+            ctx.lineTo(spike.position.x + spike.width / 2, spike.position.y + spike.height / 2)
+            ctx.fill()
         })
 
         // Request next frame

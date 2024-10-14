@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const spikeCount = Math.floor(1 + Math.random() * 2) // 1 or 2 spikes
                 for (let i = 0; i < spikeCount; i++) {
                     const spikeX = platform.position.x - platform.shape.width / 2 + Math.random() * platform.shape.width
-                    const spikeY = platform.position.y - platform.shape.height / 2 - 10
+                    const spikeY = platform.position.y - platform.shape.height / 2 // Align with the top of the platform
                     spikes.push({
                         position: new Vector2D(spikeX, spikeY),
                         width: 20,
@@ -89,10 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Handle player input
         if (keys['ArrowLeft']) {
-            player.velocity = player.velocity.add(new Vector2D(-4.5, 0))
+            player.velocity = player.velocity.add(new Vector2D(-7.5, 0))
         }
         if (keys['ArrowRight']) {
-            player.velocity = player.velocity.add(new Vector2D(4.5, 0))
+            player.velocity = player.velocity.add(new Vector2D(7.5, 0))
         }
         if ((keys['ArrowUp'] || keys[' ']) && player.velocity.y === 0) { // Allow jump only if player is not falling
             player.velocity = player.velocity.add(new Vector2D(0, -85)) // Increased jump height
@@ -115,15 +115,17 @@ document.addEventListener('DOMContentLoaded', () => {
         })
 
         // Remove platforms that are out of view and add new ones
-        if (platforms[0].position.x + platforms[0].shape.width / 2 < 0) {
+        if (platforms[0].position.x + platforms[0].shape.width / 3 < 0) {
             platforms.shift()
             spikes = spikes.filter(spike => spike.position.x > 0)
         }
 
         // Add new platforms at the right edge as needed
         if (platforms.length < 5) {
-            const newPlatformWidth = 200 + Math.random() * 300
+            const newPlatformWidth = 200 + Math.random() * 150 // Random width between 200 and 350
             const newPlatformHeight = 20
+            const minGap = 50 // Minimum gap between platforms
+            const maxGap = 100 // Maximum gap between platforms (reduced to avoid large gaps)
             const newPlatformY = 300 + Math.random() * 200
 
             const newPlatform = new RigidBody({
@@ -135,12 +137,14 @@ document.addEventListener('DOMContentLoaded', () => {
             platforms.push(newPlatform)
             physicsWorld.addBody(newPlatform)
 
+            nextPlatformX += newPlatformWidth + minGap + Math.random() * (maxGap - minGap)
+
             // Add spikes to the new platform
-            if (Math.random() > 0.5) {
-                const spikeCount = Math.floor(newPlatformWidth / 100)
+            if (Math.random() > 0.8) { // 20% chance to add spikes
+                const spikeCount = Math.floor(1 + Math.random() * 2) // 1 or 2 spikes
                 for (let i = 0; i < spikeCount; i++) {
-                    const spikeX = nextPlatformX - newPlatformWidth / 2 + i * 100 + 50
-                    const spikeY = newPlatformY - newPlatformHeight / 2 - 10
+                    const spikeX = newPlatform.position.x - newPlatform.shape.width / 2 + Math.random() * newPlatform.shape.width
+                    const spikeY = newPlatform.position.y - newPlatform.shape.height / 2 // Align with the top of the platform
                     spikes.push({
                         position: new Vector2D(spikeX, spikeY),
                         width: 20,
@@ -148,8 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     })
                 }
             }
-
-            nextPlatformX += newPlatformWidth + 200
         }
 
         // Game over condition: if the player falls off the screen

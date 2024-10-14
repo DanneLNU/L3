@@ -1,6 +1,6 @@
 // physics/PhysicsWorld.js
+
 import { Vector2D } from './Vector2D.js';
-import { RigidBody } from './RigidBody.js';
 
 export class PhysicsWorld {
     constructor() {
@@ -13,6 +13,9 @@ export class PhysicsWorld {
     }
 
     step(deltaTime) {
+        console.log('PhysicsWorld step method is called');
+        
+        // Apply gravity and integrate the forces
         this.bodies.forEach((body) => {
             if (!body.isStatic) {
                 const gravityForce = this.gravity.multiply(body.mass);
@@ -20,6 +23,7 @@ export class PhysicsWorld {
             }
         });
 
+        // Update the position and velocity
         this.bodies.forEach((body) => {
             body.integrate(deltaTime);
         });

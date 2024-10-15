@@ -175,31 +175,27 @@ document.addEventListener("DOMContentLoaded", () => {
     // Collision Detection for platforms
     platforms.forEach((body) => {
       const playerBottom = player.position.y + player.shape.height / 2;
-      const playerTop = player.position.y - player.shape.height / 2;
-      const playerRight = player.position.x + player.shape.width / 2;
-      const playerLeft = player.position.x - player.shape.width / 2;
-  
-      const platformBottom = body.position.y + body.shape.height / 2;
       const platformTop = body.position.y - body.shape.height / 2;
-      const platformRight = body.position.x + body.shape.width / 2;
-      const platformLeft = body.position.x - body.shape.width / 2;
-  
-      // Check for collision
-      if (playerBottom > platformTop &&
-          playerTop < platformBottom &&
-          playerRight > platformLeft &&
-          playerLeft < platformRight) {
-  
-          // Adjust player's position to align with the top of the platform
-          player.position.y = Math.round(platformTop - player.shape.height / 2)
-  
-          // Stop downward velocity
-          if (player.velocity.y > 0) {
-              player.velocity.y = 0;
-          }
+
+      // Make sure player lands precisely on the platform
+      if (
+        playerBottom >= platformTop &&
+        player.position.y - player.shape.height / 2 <
+          body.position.y + body.shape.height / 2 &&
+        player.position.x + player.shape.width / 2 >
+          body.position.x - body.shape.width / 2 &&
+        player.position.x - player.shape.width / 2 <
+          body.position.x + body.shape.width / 2
+      ) {
+        // Align player's bottom to the platform top
+        player.position.y = platformTop - player.shape.height / 2 + 1; // Adding a small value like +1 can reduce floating
+
+        // Stop downward velocity
+        if (player.velocity.y > 0) {
+          player.velocity.y = 0;
+        }
       }
-  });
-  
+    });
 
     // Collision Detection for spikes
     spikes.forEach((spike) => {
@@ -254,14 +250,14 @@ document.addEventListener("DOMContentLoaded", () => {
       };
     }
 
-    // Draw platforms
+    // Draw platforms precisely
     ctx.fillStyle = "#3e8e41"; // Green color for platforms
     platforms.forEach((body) => {
       ctx.fillRect(
-        body.position.x - body.shape.width / 2,
-        body.position.y - body.shape.height / 2,
-        body.shape.width,
-        body.shape.height
+        Math.round(body.position.x - body.shape.width / 2),
+        Math.round(body.position.y - body.shape.height / 2),
+        Math.round(body.shape.width),
+        Math.round(body.shape.height)
       );
     });
 

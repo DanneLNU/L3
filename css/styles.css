@@ -13,6 +13,8 @@ body {
   border: 2px solid #000;
   background: #87ceeb; /* Light blue background for canvas */
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  padding: 0;
+  margin: 0;
 }
 
 button {

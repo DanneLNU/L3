@@ -125,12 +125,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Add new platforms at the right edge as needed
-    if (platforms.length < 5) {
+    if (platforms.length < 200) {
       const newPlatformWidth = 200 + Math.random() * 150; // Random width between 200 and 350
       const newPlatformHeight = 20;
-      const minGap = 50; // Minimum gap between platforms
-      const maxGap = 100; // Maximum gap between platforms (reduced to avoid large gaps)
-      const newPlatformY = 300 + Math.random() * 200;
+      const minGap = 100; // Minimum gap between platforms
+      const maxGap = 150; // Maximum gap between platforms (reduced to avoid large gaps)
+      const newPlatformY = 200 + Math.random() * 200;
 
       const newPlatform = new RigidBody({
         position: new Vector2D(nextPlatformX, newPlatformY),
@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
         newPlatformWidth + minGap + Math.random() * (maxGap - minGap);
 
       // Add spikes to the new platform
-      if (Math.random() > 0.8) {
+      if (Math.random() > 0.3) {
         // 20% chance to add spikes
         const spikeCount = Math.floor(1 + Math.random() * 2); // 1 or 2 spikes
         for (let i = 0; i < spikeCount; i++) {
@@ -199,8 +199,8 @@ document.addEventListener("DOMContentLoaded", () => {
     spikes.forEach((spike) => {
       const playerBottom = player.position.y + player.shape.height / 2.3;
       const playerTop = player.position.y - player.shape.height / 3;
-      const playerRight = player.position.x + player.shape.width / 4.9;
-      const playerLeft = player.position.x - player.shape.width / 4.9;
+      const playerRight = player.position.x + player.shape.width / 6.9;
+      const playerLeft = player.position.x - player.shape.width / 6.9;
 
       const spikeBottom = spike.position.y + spike.height / 3;
       const spikeTop = spike.position.y - spike.height / 3;

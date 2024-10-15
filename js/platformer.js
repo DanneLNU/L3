@@ -174,26 +174,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Collision Detection for platforms
     platforms.forEach((body) => {
-      if (
-        player.position.y + player.shape.height / 2 >
-          body.position.y - body.shape.height / 2 &&
-        player.position.y - player.shape.height / 2 <
-          body.position.y + body.shape.height / 2 &&
-        player.position.x + player.shape.width / 2 >
-          body.position.x - body.shape.width / 2 &&
-        player.position.x - player.shape.width / 2 <
-          body.position.x + body.shape.width / 2
-      ) {
-        // Resolve collision by placing the player on top of the platform
-        player.position.y =
-          body.position.y - body.shape.height / 2 - player.shape.height / 2;
-
-        // Stop downward velocity
-        if (player.velocity.y > 0) {
-          player.velocity.y = 0;
-        }
+      const playerBottom = player.position.y + player.shape.height / 2;
+      const playerTop = player.position.y - player.shape.height / 2;
+      const playerRight = player.position.x + player.shape.width / 2;
+      const playerLeft = player.position.x - player.shape.width / 2;
+  
+      const platformBottom = body.position.y + body.shape.height / 2;
+      const platformTop = body.position.y - body.shape.height / 2;
+      const platformRight = body.position.x + body.shape.width / 2;
+      const platformLeft = body.position.x - body.shape.width / 2;
+  
+      // Check for collision
+      if (playerBottom > platformTop &&
+          playerTop < platformBottom &&
+          playerRight > platformLeft &&
+          playerLeft < platformRight) {
+  
+          // Adjust player's position to align with the top of the platform
+          player.position.y = platformTop - player.shape.height / 2 + 0.01
+  
+          // Stop downward velocity
+          if (player.velocity.y > 0) {
+              player.velocity.y = 0;
+          }
       }
-    });
+  });
+  
 
     // Collision Detection for spikes
     spikes.forEach((spike) => {

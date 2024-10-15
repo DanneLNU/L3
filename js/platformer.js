@@ -128,8 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (platforms.length < 200) {
       const newPlatformWidth = 200 + Math.random() * 150; // Random width between 200 and 350
       const newPlatformHeight = 20;
-      const minGap = 100; // Minimum gap between platforms
-      const maxGap = 150; // Maximum gap between platforms (reduced to avoid large gaps)
+      const minGap = 200; // Minimum gap between platforms
+      const maxGap = 350; // Maximum gap between platforms (reduced to avoid large gaps)
       const newPlatformY = 200 + Math.random() * 200;
 
       const newPlatform = new RigidBody({
@@ -191,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
           playerLeft < platformRight) {
   
           // Adjust player's position to align with the top of the platform
-          player.position.y = platformTop - player.shape.height / 2 + 0.01
+          player.position.y = Math.round(platformTop - player.shape.height / 2)
   
           // Stop downward velocity
           if (player.velocity.y > 0) {

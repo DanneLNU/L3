@@ -1,4 +1,5 @@
 // physics/Shape.js
+import { Vector2D } from './Vector2D.js';
 export class Shape {
     constructor(type) {
         this.type = type;

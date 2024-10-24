@@ -69,6 +69,19 @@ export class PhysicsWorld {
         return null;
     }
 
+    circleCircleCollision(bodyA, bodyB) {
+        const diff = bodyB.position.subtract(bodyA.position)
+        const distance = diff.magnitude()
+        const radiusSum = bodyA.shape.radius + bodyB.shape.radius
+
+        if (distance < radiusSum) {
+            const normal = diff.normalize()
+            const penetration = radiusSum - distance
+            return { normal, penetration }
+        }
+        return null
+    }
+
     rectangleRectangleCollision(bodyA, bodyB) {
         const ax = bodyA.position.x - bodyA.shape.width / 2;
         const ay = bodyA.position.y - bodyA.shape.height / 2;

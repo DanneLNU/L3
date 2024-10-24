@@ -2,87 +2,99 @@
 import { Vector2D } from './Vector2D.js';
 
 export class PhysicsWorld {
+    #bodies;
+    #gravity;
+
     constructor() {
-        this.bodies = [];
-        this.gravity = new Vector2D(0, 9.8);
+        this.#bodies = [];
+        this.#gravity = new Vector2D(0, 9.8);
+    }
+
+    // Getter och Setter för gravity om nödvändigt
+    get gravity() {
+        return this.#gravity;
+    }
+
+    set gravity(value) {
+        this.#gravity = value;
     }
 
     addBody(body) {
-        this.bodies.push(body);
+        this.#bodies.push(body);
     }
 
     removeBody(body) {
-        this.bodies = this.bodies.filter((b) => b !== body);
+        this.#bodies = this.#bodies.filter((b) => b !== body);
     }
 
     step(deltaTime) {
         // Apply gravity
-        this.bodies.forEach((body) => {
+        this.#bodies.forEach((body) => {
             if (!body.isStatic) {
-                const gravityForce = this.gravity.multiply(body.mass);
+                const gravityForce = this.#gravity.multiply(body.mass);
                 body.applyForce(gravityForce);
             }
         });
 
         // Integrate motion
-        this.bodies.forEach((body) => {
+        this.#bodies.forEach((body) => {
             body.integrate(deltaTime);
         });
 
         // Handle collisions
-        this.handleCollisions();
+        this.#handleCollisions();
     }
 
-    handleCollisions() {
-        const pairs = this.getPotentialCollisions();
+    #handleCollisions() {
+        const pairs = this.#getPotentialCollisions();
 
         pairs.forEach(([bodyA, bodyB]) => {
-            const collision = this.checkCollision(bodyA, bodyB);
+            const collision = this.#checkCollision(bodyA, bodyB);
             if (collision) {
-                this.resolveCollision(bodyA, bodyB, collision);
+                this.#resolveCollision(bodyA, bodyB, collision);
                 bodyA.emit('collision', { other: bodyB });
                 bodyB.emit('collision', { other: bodyA });
             }
         });
     }
 
-    getPotentialCollisions() {
+    #getPotentialCollisions() {
         const pairs = [];
-        for (let i = 0; i < this.bodies.length; i++) {
-            for (let j = i + 1; j < this.bodies.length; j++) {
-                pairs.push([this.bodies[i], this.bodies[j]]);
+        for (let i = 0; i < this.#bodies.length; i++) {
+            for (let j = i + 1; j < this.#bodies.length; j++) {
+                pairs.push([this.#bodies[i], this.#bodies[j]]);
             }
         }
         return pairs;
     }
 
-    checkCollision(bodyA, bodyB) {
+    #checkCollision(bodyA, bodyB) {
         const typeA = bodyA.shape.type;
         const typeB = bodyB.shape.type;
 
         if (typeA === 'circle' && typeB === 'circle') {
-            return this.circleCircleCollision(bodyA, bodyB);
+            return this.#circleCircleCollision(bodyA, bodyB);
         }
         if (typeA === 'rectangle' && typeB === 'rectangle') {
-            return this.rectangleRectangleCollision(bodyA, bodyB);
+            return this.#rectangleRectangleCollision(bodyA, bodyB);
         }
         return null;
     }
 
-    circleCircleCollision(bodyA, bodyB) {
-        const diff = bodyB.position.subtract(bodyA.position)
-        const distance = diff.magnitude()
-        const radiusSum = bodyA.shape.radius + bodyB.shape.radius
+    #circleCircleCollision(bodyA, bodyB) {
+        const diff = bodyB.position.subtract(bodyA.position);
+        const distance = diff.magnitude();
+        const radiusSum = bodyA.shape.radius + bodyB.shape.radius;
 
         if (distance < radiusSum) {
-            const normal = diff.normalize()
-            const penetration = radiusSum - distance
-            return { normal, penetration }
+            const normal = diff.normalize();
+            const penetration = radiusSum - distance;
+            return { normal, penetration };
         }
-        return null
+        return null;
     }
 
-    rectangleRectangleCollision(bodyA, bodyB) {
+    #rectangleRectangleCollision(bodyA, bodyB) {
         const ax = bodyA.position.x - bodyA.shape.width / 2;
         const ay = bodyA.position.y - bodyA.shape.height / 2;
         const aWidth = bodyA.shape.width;
@@ -119,7 +131,7 @@ export class PhysicsWorld {
         return null;
     }
 
-    resolveCollision(bodyA, bodyB, collision) {
+    #resolveCollision(bodyA, bodyB, collision) {
         const { normal, penetration } = collision;
         const totalInvMass = bodyA.invMass + bodyB.invMass;
         if (totalInvMass === 0) return;

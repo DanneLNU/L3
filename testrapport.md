@@ -9,6 +9,7 @@ Each test case is designed to verify the correctness of the module's functionali
 
 Game has been tested through web interface and the logic for Jump, Left and Right movement works as intended. 
 The Game Over on impact with spikes or falling down is also working as intended. 
+
 Here is the jumping
 
 ![Jumping](./images/jumping.png)

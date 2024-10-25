@@ -7,19 +7,37 @@ body {
   justify-content: center;
   align-items: center;
   background: linear-gradient(to bottom, #87cefa, #1e90ff); /* Sky background */
+  font-family: Arial, sans-serif;
+}
+
+.game-container {
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+  font-size: 48px;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px #000;
 }
 
 #gameCanvas {
   border: 2px solid #000;
   background: #87ceeb; /* Light blue background for canvas */
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  padding: 0;
-  margin: 0;
+  margin-top: 20px;
+}
+
+p {
+  font-size: 18px;
+  color: #ffffff;
+  text-shadow: 1px 1px 3px #000;
+  margin-top: 15px;
 }
 
 button {
   position: absolute;
-  top: 50%;
+  top: 60%;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 15px 30px;

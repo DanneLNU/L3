@@ -3,13 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Platformer Game</title>
+    <title>Platform Runner</title>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-    <div id="gameOverText">You Died!</div>
-    <button id="playButton">Play</button>
+    <div class="game-container">
+      <h1>Platform Runner</h1>
+      <canvas id="gameCanvas" width="800" height="600"></canvas>
+      <p>Tips: Hold "Jump" for multiple jumps.</p>
+      <div id="gameOverText">You Died!</div>
+      <button id="playButton">Play</button>
+    </div>
     <script type="module" src="js/platformer.js" defer></script>
   </body>
 </html>

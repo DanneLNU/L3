@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function initializeGame() {
     // Create the physics world
     physicsWorld = new PhysicsWorld();
-    physicsWorld.gravity = new Vector2D(0, 60); 
+    physicsWorld.gravity = new Vector2D(0, 60);
 
     // Create the player character and start on the first platform
     player = new RigidBody({

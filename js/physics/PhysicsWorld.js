@@ -10,7 +10,6 @@ export class PhysicsWorld {
         this.#gravity = new Vector2D(0, 9.8);
     }
 
-    // Getter och Setter för gravity om nödvändigt
     get gravity() {
         return this.#gravity;
     }

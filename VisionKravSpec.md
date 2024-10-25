@@ -15,6 +15,9 @@
 
 **[Platform Runner]** strävar efter att bli ett innovativt och engagerande 2D-plattformsspel som erbjuder spelare en dynamisk och utmanande spelupplevelse. Vår vision är att integrera avancerade fysiksystem och mångsidiga kollisionsdetektioner för att skapa en levande spelvärld fylld med varierande hinder, fiender och interaktiva element. Genom att införa snabbare plattformar, fler hinder och intelligenta fiender vill vi öka spelets tempo och komplexitet, vilket kräver snabba reflexer och strategiskt tänkande från spelarna.
 
+Att göra karaktären mer verklig genom att ändra åt vilket håll han tittar när man styr åt det hållet, eller sekvensen när han hoppar, dör, slår med svärdet och liknande. Png har adderats men 
+själva logiken har ännu inte implementerats.
+
 ### Nyckelfunktioner och Implementeringar:
 
 1. **Snabbare Plattformar:**

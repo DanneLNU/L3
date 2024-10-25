@@ -1,7 +1,7 @@
 # **Infinite Runner Platformer**
 
-![Game Start!](../images/game1.png)
-![Game End!](../images/game2.png)
+![Game Start!](./images/game1.png)
+![Game End!](./images/game2.png)
 
 ## Table of Contents
 

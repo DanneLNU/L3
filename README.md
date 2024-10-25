@@ -1,4 +1,8 @@
-# **Infinite Runner Platformer**
+# **Infinite Platform Runner**
+
+Game can be played at
+
+https://glittering-maamoul-a5cbb5.netlify.app/
 
 ![Game Start!](./images/game1.png)
 ![Game End!](./images/game2.png)
